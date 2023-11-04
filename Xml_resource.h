@@ -22,15 +22,15 @@ public:
 
 class Xml_resource {
 private:
-	std::unique_ptr<Node> root = nullptr;
+	std::unique_ptr<Node> root;
 	std::unique_ptr<Node> rec_load(std::vector<std::string>& parsed, int& index);
 	void rec_node_print(std::unique_ptr<Node>& node);
 	void rec_node_upload(std::unique_ptr<Node>& node, std::ofstream& file);
-	Xml_resource() {};
-	Xml_resource(const Xml_resource&) {};
+	Xml_resource() = default;
+	Xml_resource(const Xml_resource&) = default;
 public:
-	static Xml_resource* create_simple() { return new Xml_resource(); };
-	static std::unique_ptr<Xml_resource> create() { return std::unique_ptr<Xml_resource>(); };
+	
+	static std::unique_ptr<Xml_resource> create() { return std::unique_ptr<Xml_resource>(new Xml_resource); };
 	void load(const char* file_name);
 	void print();
 	void upload(const char* file_name);

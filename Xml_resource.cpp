@@ -57,7 +57,7 @@ std::unique_ptr<Node> Xml_resource::rec_load(std::vector<std::string>& parsed, i
 	++index;
 	std::vector<std::unique_ptr<Node>> children;
 	while (parsed[index][1] != '/') {
-		children.push_back(rec_load(parsed, index));
+		children.push_back(std::move(rec_load(parsed, index)));
 	}
 	++index;
 	std::unique_ptr<Node> node_ptr(new Node(name, value, children));
@@ -66,8 +66,9 @@ std::unique_ptr<Node> Xml_resource::rec_load(std::vector<std::string>& parsed, i
 
 void Xml_resource::load(const char* file_name) {
 	std::vector<std::string> parsed = parse_line(file_name);
+	
 	int index = 0;
-	this->root = rec_load(parsed, index);
+	this->root = std::move(rec_load(parsed, index));
 }
 
 void Xml_resource::rec_node_print(std::unique_ptr<Node>& node) {
@@ -176,7 +177,7 @@ Xml_resource::iterator Xml_resource::find_by_value(const int value) const {
 
 Xml_resource::iterator Xml_resource::add(const std::string name, const int value, Xml_resource::iterator& it) {
 	std::unique_ptr<Node> new_node(new Node(name, value));
-	//it->children.push_back(new_node); need to fix
+	it->children.push_back(std::move(new_node)); 
 	Xml_resource::iterator itt(this->begin());
 	return it;
 }
