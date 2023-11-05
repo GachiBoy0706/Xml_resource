@@ -48,13 +48,18 @@ public:
 		iterator operator--(int);
 		iterator& operator+=(int n);
 		iterator& operator-=(int n);
-		bool operator==(const iterator& compare) const { return (memory[current_index] == compare.memory[compare.current_index]); }
-		bool operator!=(const iterator& compare) const { return (memory[current_index] != compare.memory[current_index]); }
-		Node& operator*() { return *memory[current_index]; }
+		bool operator==(const iterator& compare) const {
+			return (memory[current_index] == compare.memory[compare.current_index]); 
+		}
+		bool operator!=(const iterator& compare) const { 
+			return !operator==(compare); 
+		}
+		Node& operator*() { return *(memory[current_index]); }
 		Node* operator->() { return memory[current_index]; };
 	};
 	iterator begin() const { return iterator(root); };
 	iterator find_by_name(const std::string name) const;
 	iterator find_by_value(const int value) const;
 	iterator add(const std::string name, const int value, iterator& it);
+	bool erase(iterator it);
 };

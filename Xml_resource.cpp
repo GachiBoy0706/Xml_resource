@@ -176,8 +176,39 @@ Xml_resource::iterator Xml_resource::find_by_value(const int value) const {
 }
 
 Xml_resource::iterator Xml_resource::add(const std::string name, const int value, Xml_resource::iterator& it) {
-	std::unique_ptr<Node> new_node(new Node(name, value));
-	it->children.push_back(std::move(new_node)); 
 	Xml_resource::iterator itt(this->begin());
-	return it;
+	while (itt != it)
+		++itt;
+	if (itt == it) {
+		std::unique_ptr<Node> new_node(new Node(name, value));
+		Xml_resource::iterator it_new_node(new_node);
+		it->children.push_back(std::move(new_node));
+		return it_new_node;
+	}
+	else
+		throw "node wasn`t found";
+}
+
+bool Xml_resource::erase(Xml_resource::iterator it) {
+	Xml_resource::iterator itt(this->begin());
+	while (itt != it)
+		++itt;
+	if (itt != it)
+		return false;
+	else {
+		Node* prev_node = &(*itt);
+		--itt;
+		while (itt->children[0].get() != prev_node) {
+			prev_node = &(*itt);
+			--itt;
+		}
+		for (unsigned int i = 0; i < itt->children.size(); ++i) {
+			if (itt->children[i].get() == prev_node) {
+				itt->children[i].release();
+				itt->children.erase(itt->children.begin() + i);
+				break;
+			}
+		}
+		return true;
+	}
 }
